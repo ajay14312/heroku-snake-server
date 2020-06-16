@@ -15,6 +15,10 @@ const httpServer = http.createServer((req, res) => {
     console.log('HTTP request');
 })
 
+httpServer.listen(8080, () => {
+    console.log('listening on 8080')
+})
+
 const ws = new WebSocket({ "httpServer": httpServer });
 
 const createGame = (res) => {
@@ -179,8 +183,4 @@ ws.on('request', (req) => {
         }
     })
     connect();
-})
-
-httpServer.listen(8080, () => {
-    console.log('listening on 8080')
 })
