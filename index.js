@@ -181,6 +181,6 @@ ws.on('request', (req) => {
     connect();
 })
 
-httpServer.listen(8080, () => {
+httpServer.listen(process.env.PORT || 8080, () => {
     console.log('listening on 8080')
 })
