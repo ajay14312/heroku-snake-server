@@ -6,16 +6,16 @@ const app = express();
 
 app.use(express.static(__dirname + "/"));
 
-app.listen(process.env.PORT || 8080, () => {
-    console.log('listening on 8080')
-})
-
 let connection = null;
 const players = {};
 const games = {};
 let food = {};
 
 const httpServer = http.createServer(app);
+
+httpServer.listen(process.env.PORT || 8080, () => {
+    console.log('listening on 8080')
+})
 
 const ws = new WebSocket({ "httpServer": httpServer });
 
