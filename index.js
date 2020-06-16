@@ -11,9 +11,7 @@ const players = {};
 const games = {};
 let food = {};
 
-const httpServer = http.createServer((req, res) => {
-    console.log('HTTP request');
-})
+const httpServer = http.createServer(app);
 
 const ws = new WebSocket({ "httpServer": httpServer });
 
