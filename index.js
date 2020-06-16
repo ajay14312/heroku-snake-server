@@ -4,17 +4,15 @@ const METHODS = require('./src/consts/game-consts');
 const express = require("express");
 const app = express();
 
-app.use(express.static(__dirname + "/"));
+app.use(express.static(__dirname + "/"))
 
 let connection = null;
 const players = {};
 const games = {};
 let food = {};
 
-const httpServer = http.createServer(app);
-
-httpServer.listen(process.env.PORT || 8080, () => {
-    console.log('listening on 8080')
+const httpServer = http.createServer((req, res) => {
+    console.log('HTTP request');
 })
 
 const ws = new WebSocket({ "httpServer": httpServer });
@@ -27,7 +25,7 @@ const createGame = (res) => {
         'id': gameID,
         'players': []
     }
-    food = { x: 3, y: 4 };
+    food = [3, 4];
     const payLoad = {
         'method': METHODS.CREATED,
         'game': games[gameID]
@@ -50,17 +48,17 @@ const joinGame = (res) => {
     const yPositions = []
     for (let item of game.players) {
         const body = item.body;
-        xPositions.push(body[body.length - 1].x);
-        yPositions.push(body[body.length - 1].y);
+        xPositions.push(body[body.length - 1][0]);
+        yPositions.push(body[body.length - 1][1]);
     }
-    xPositions.push(food.x);
-    yPositions.push(body.y);
+    xPositions.push(food[0]);
+    yPositions.push(food[1]);
     const maxX = Math.max(...xPositions);
     const maxY = Math.max(...yPositions);
     game.players.push({
         'playerID': playerID,
         'color': color,
-        'body': [{ x: maxX + 10, y: maxY + 10 }, { x: maxX + 20, y: maxY + 20 }]
+        'body': [[maxX + 10, maxY + 10], [maxX + 20, maxY + 20]]
     })
 
     const payLoad = {
@@ -84,19 +82,19 @@ const foodAte = (res) => {
 
     for (let [index, item] of game.players.entries()) {
         const body = item.body;
-        xPositions.push(body[body.length - 1].x);
-        yPositions.push(body[body.length - 1].y);
+        xPositions.push(body[body.length - 1][0]);
+        yPositions.push(body[body.length - 1][1]);
         if (item.playerID === playerID) {
-            game.players[index].body.push({ x: 30, y: 40 });
+            game.players[index].body.push([30, 40]);
         }
     }
 
-    xPositions.push(food.x);
-    yPositions.push(body.y);
+    xPositions.push(food[0]);
+    yPositions.push(food[1]);
     const maxX = Math.max(...xPositions);
     const maxY = Math.max(...yPositions);
 
-    food = { x: maxX + 20, y: maxY + 20 }
+    food = [maxX + 20, maxY + 20]
 
     const payLoad = {
         'method': METHODS.UPDATE,
@@ -118,16 +116,16 @@ const directionChange = (res) => {
     let head = game.players[index].body[game.players[index].body.length - 1];
     switch (direction) {
         case 'RIGHT':
-            head = { x: head.x + 2, y: head.y };
+            head = [head[0] + 2, head[1]];
             break;
         case 'LEFT':
-            head = { x: head.x - 2, y: head.y };
+            head = [head[0] - 2, head[1]];
             break;
         case 'DOWN':
-            head = { x: head.x, y: head.y + 2 };
+            head = [head[0], head[1] + 2];
             break;
         case 'UP':
-            head = { x: head.x, y: head.y - 2 };
+            head = [head[0], head[1] - 2];
             break;
     }
 
@@ -181,4 +179,8 @@ ws.on('request', (req) => {
         }
     })
     connect();
+})
+
+httpServer.listen(8080, () => {
+    console.log('listening on 8080')
 })
