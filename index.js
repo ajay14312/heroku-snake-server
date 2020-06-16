@@ -4,7 +4,11 @@ const METHODS = require('./src/consts/game-consts');
 const express = require("express");
 const app = express();
 
-app.use(express.static(__dirname + "/"))
+app.use(express.static(__dirname + "/"));
+
+app.listen(process.env.PORT || 8080, () => {
+    console.log('listening on 8080')
+})
 
 let connection = null;
 const players = {};
@@ -177,8 +181,4 @@ ws.on('request', (req) => {
         }
     })
     connect();
-})
-
-httpServer.listen(process.env.PORT || 8080, () => {
-    console.log('listening on 8080')
 })
