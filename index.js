@@ -31,6 +31,7 @@ const createGame = (res) => {
         'players': []
     }
     food = [3, 4];
+    players[playerID].playerName = res.playerName
     const payLoad = {
         'method': METHODS.CREATED,
         'game': games[gameID]
@@ -65,7 +66,8 @@ const joinGame = (res) => {
         'playerID': playerID,
         'color': color,
         'body': [[maxX + 10, maxY + 10], [maxX + 20, maxY + 20]],
-        'direction': directions[parseInt(Math.random() * 5)]
+        'direction': directions[parseInt(Math.random() * 5)],
+        'playerName': players[playerID].playerName
     })
 
     const payLoad = {
