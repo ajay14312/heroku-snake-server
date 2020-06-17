@@ -65,7 +65,7 @@ const joinGame = (res) => {
         'playerID': playerID,
         'color': color,
         'body': [[maxX + 10, maxY + 10], [maxX + 20, maxY + 20]],
-        'direction': directions[parseInt(Math.random() * 5)];
+        'direction': directions[parseInt(Math.random() * 5)]
     })
 
     const payLoad = {
