@@ -46,6 +46,7 @@ const joinGame = (res) => {
     const playerID = res.playerID;
     const gameID = res.gameID;
     gameIDForSnakeMove = res.gameID;
+    players[playerID].playerName = res.playerName;
     const game = games[gameID];
     if (game.players.length > 4) {
         return;
