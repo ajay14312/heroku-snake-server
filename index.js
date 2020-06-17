@@ -10,8 +10,11 @@ let connection = null;
 const players = {};
 const games = {};
 let food = {};
+let timeOut = '';
+let gameIDForSnakeMove = '';
+const directions = ['RIGHT', 'LEFT', 'UP', 'DOWN'];
 
-const httpServer = http.createServer(app)
+const httpServer = http.createServer(app);
 
 httpServer.listen(process.env.PORT || 8080, () => {
     console.log('listening on 8080')
@@ -41,8 +44,9 @@ const createGame = (res) => {
 const joinGame = (res) => {
     const playerID = res.playerID;
     const gameID = res.gameID;
+    gameIDForSnakeMove = res.gameID;
     const game = games[gameID];
-    if (game.players.length > 3) {
+    if (game.players.length > 4) {
         return;
     }
     const color = `hsla(${Math.random() * 360}, 100%, 70%, 1)`;
@@ -60,7 +64,8 @@ const joinGame = (res) => {
     game.players.push({
         'playerID': playerID,
         'color': color,
-        'body': [[maxX + 10, maxY + 10], [maxX + 20, maxY + 20]]
+        'body': [[maxX + 10, maxY + 10], [maxX + 20, maxY + 20]],
+        'direction': directions[parseInt(Math.random() * 5)];
     })
 
     const payLoad = {
@@ -72,6 +77,10 @@ const joinGame = (res) => {
     for (let item of game.players) {
         players[item.playerID].connection.send(JSON.stringify(payLoad));
     }
+
+    timeOut = setInterval(() => {
+        moveSnake();
+    }, 500);
 }
 
 const foodAte = (res) => {
@@ -99,7 +108,7 @@ const foodAte = (res) => {
     food = [maxX + 20, maxY + 20]
 
     const payLoad = {
-        'method': METHODS.UPDATE,
+        'method': METHODS.FOODCOLLISION,
         'game': game,
         'food': food
     }
@@ -133,6 +142,7 @@ const directionChange = (res) => {
 
     game.players[index].body.push(head);
     game.players[index].body.shift();
+    game.players[index].direction = res.direction;
 
     const payLoad = {
         'method': METHODS.DIRECTIONCHANGED,
@@ -158,6 +168,41 @@ const connect = () => {
     }
 
     connection.send(JSON.stringify(payLoad));
+}
+
+const moveSnake = () => {
+    const game = games[gameIDForSnakeMove];
+
+    for (let [index, player] of game.players.entries()) {
+        let head = player.body[player.body.length - 1];
+        const direction = player.direction;
+        switch (direction) {
+            case 'RIGHT':
+                head = [head[0] + 2, head[1]];
+                break;
+            case 'LEFT':
+                head = [head[0] - 2, head[1]];
+                break;
+            case 'DOWN':
+                head = [head[0], head[1] + 2];
+                break;
+            case 'UP':
+                head = [head[0], head[1] - 2];
+                break;
+        }
+
+        game.players[index].body.push(head);
+        game.players[index].body.shift();
+    }
+
+    const payLoad = {
+        'method': METHODS.UPDATE,
+        'game': game
+    }
+
+    for (let item of game.players) {
+        players[item.playerID].connection.send(JSON.stringify(payLoad));
+    }
 }
 
 ws.on('request', (req) => {
