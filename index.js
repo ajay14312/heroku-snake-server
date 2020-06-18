@@ -67,13 +67,13 @@ const joinGame = (res) => {
     const direction = directions[parseInt(Math.random() * 5)];
     let body = [];
     if (direction === 'RIGHT') {
-        body = [[maxX + 2, maxY + 2], [maxX + 2, maxY + 3], [maxX + 2, maxY + 4]];
+        body = [[maxX + 4, maxY + 2], [maxX + 3, maxY + 2], [maxX + 2, maxY + 2]];
     } else if (direction === 'LEFT') {
-        body = [[maxX + 2, maxY + 2], [maxX + 2, maxY + 3], [maxX + 2, maxY + 4]];
+        body = [[maxX + 4, maxY + 2], [maxX + 3, maxY + 2], [maxX + 2, maxY + 2]];
     } else if (direction === 'DOWN') {
-        body = [[maxX + 2, maxY + 2], [maxX + 3, maxY + 2], [maxX + 4, maxY + 2]];
+        body = [[maxX + 2, maxY + 4], [maxX + 2, maxY + 3], [maxX + 2, maxY + 2]];
     } else if (direction === 'UP') {
-        body = [[maxX + 2, maxY + 2], [maxX + 3, maxY + 2], [maxX + 4, maxY + 2]];
+        body = [[maxX + 2, maxY + 4], [maxX + 2, maxY + 3], [maxX + 2, maxY + 2]];
     }
     game.players.push({
         'playerID': playerID,
@@ -191,29 +191,34 @@ const moveSnake = () => {
     const game = games[gameIDForSnakeMove];
 
     for (let [index, player] of game.players.entries()) {
-        let head = player.body[player.body.length - 1];
-        if (head[0] === body[0] || head[1] === body[1]) {
+        let head = player.body[0];
+        if (head[0] === body[0] || head[1] === body[1] || head[0] === 1 || head[1] === 1) {
             removePlayer(connection.playerID);
             return;
         }
         const direction = player.direction;
         switch (direction) {
             case 'RIGHT':
-                head = [head[0] + 1, head[1]];
+                for (let [id, _] of game.players[index].body.entries()) {
+                    game.players[index].body[id][0]++;
+                }
                 break;
             case 'LEFT':
-                head = [head[0] - 1, head[1]];
+                for (let [id, _] of game.players[index].body.entries()) {
+                    game.players[index].body[id][0]--;
+                }
                 break;
             case 'DOWN':
-                head = [head[0], head[1] + 1];
+                for (let [id, _] of game.players[index].body.entries()) {
+                    game.players[index].body[id][1]++;
+                }
                 break;
             case 'UP':
-                head = [head[0], head[1] - 1];
+                for (let [id, _] of game.players[index].body.entries()) {
+                    game.players[index].body[id][1]--;
+                }
                 break;
         }
-
-        game.players[index].body.push(head);
-        game.players[index].body.shift();
     }
 
     const payLoad = {
