@@ -13,6 +13,7 @@ let food = {};
 let timeOut = '';
 let gameIDForSnakeMove = '';
 const directions = ['RIGHT', 'LEFT', 'UP', 'DOWN'];
+const body = [50, 30];
 
 const httpServer = http.createServer(app);
 
@@ -30,7 +31,7 @@ const createGame = (res) => {
         'id': gameID,
         'players': []
     }
-    food = [3, 4];
+    food = [25, 15];
     players[playerID].playerName = res.playerName
     const payLoad = {
         'method': METHODS.CREATED,
@@ -63,11 +64,22 @@ const joinGame = (res) => {
     yPositions.push(food[1]);
     const maxX = Math.max(...xPositions);
     const maxY = Math.max(...yPositions);
+    const direction = directions[parseInt(Math.random() * 5)];
+    let body = [];
+    if (direction === 'RIGHT') {
+        body = [[maxX + 2, maxY + 2], [maxX + 2, maxY + 3], [maxX + 2, maxY + 4]];
+    } else if (direction === 'LEFT') {
+        body = [[maxX + 2, maxY + 2], [maxX + 2, maxY + 3], [maxX + 2, maxY + 4]];
+    } else if (direction === 'DOWN') {
+        body = [[maxX + 2, maxY + 2], [maxX + 3, maxY + 2], [maxX + 4, maxY + 2]];
+    } else if (direction === 'UP') {
+        body = [[maxX + 2, maxY + 2], [maxX + 3, maxY + 2], [maxX + 4, maxY + 2]];
+    }
     game.players.push({
         'playerID': playerID,
         'color': color,
-        'body': [[maxX + 10, maxY + 10], [maxX + 20, maxY + 20]],
-        'direction': directions[parseInt(Math.random() * 5)],
+        'body': body,
+        'direction': direction,
         'playerName': players[playerID].playerName
     })
 
@@ -99,6 +111,7 @@ const foodAte = (res) => {
         xPositions.push(body[body.length - 1][0]);
         yPositions.push(body[body.length - 1][1]);
         if (item.playerID === playerID) {
+            const body = game.players[index].body;
             game.players[index].body.push([30, 40]);
         }
     }
@@ -161,6 +174,7 @@ const directionChange = (res) => {
 const connect = () => {
     const date = new Date();
     const playerID = `${date.getTime()}-s${date.getFullYear()}n${date.getMonth()}-a${date.getDate()}`;
+    connection.playerID = playerID;
     players[playerID] = {
         'connection': connection
     }
@@ -178,19 +192,22 @@ const moveSnake = () => {
 
     for (let [index, player] of game.players.entries()) {
         let head = player.body[player.body.length - 1];
+        if (head[0] === body[0] || head[1] === body[1]) {
+            removePlayer(connection.playerID);
+        }
         const direction = player.direction;
         switch (direction) {
             case 'RIGHT':
-                head = [head[0] + 2, head[1]];
+                head = [head[0] + 1, head[1]];
                 break;
             case 'LEFT':
-                head = [head[0] - 2, head[1]];
+                head = [head[0] - 1, head[1]];
                 break;
             case 'DOWN':
-                head = [head[0], head[1] + 2];
+                head = [head[0], head[1] + 1];
                 break;
             case 'UP':
-                head = [head[0], head[1] - 2];
+                head = [head[0], head[1] - 1];
                 break;
         }
 
@@ -200,7 +217,8 @@ const moveSnake = () => {
 
     const payLoad = {
         'method': METHODS.UPDATE,
-        'game': game
+        'game': game,
+        'food': food
     }
 
     for (let item of game.players) {
@@ -217,6 +235,8 @@ const removePlayer = (playerID) => {
             break;
         }
     }
+
+    delete players[playerID];
 }
 
 ws.on('request', (req) => {
@@ -225,9 +245,8 @@ ws.on('request', (req) => {
         console.log('Connection opened!')
     })
     connection.on('close', (res) => {
-        console.log(connection, games);
         console.log(res, 'Connection closed!');
-        const playerID = connection.closeDescription;
+        const playerID = connection.playerID;
         removePlayer(playerID);
     })
     connection.on("message", (message) => {
