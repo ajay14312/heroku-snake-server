@@ -4,7 +4,7 @@ const METHODS = require('./src/consts/game-consts');
 const express = require("express");
 const app = express();
 
-app.use(express.static(__dirname + "/"))
+app.use(express.static(__dirname + "/"));
 
 let connection = null;
 const players = {};
@@ -194,6 +194,7 @@ const moveSnake = () => {
         let head = player.body[player.body.length - 1];
         if (head[0] === body[0] || head[1] === body[1]) {
             removePlayer(connection.playerID);
+            return;
         }
         const direction = player.direction;
         switch (direction) {
