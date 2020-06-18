@@ -191,16 +191,11 @@ const moveSnake = () => {
     const game = games[gameIDForSnakeMove];
 
     for (let [index, player] of game.players.entries()) {
-
-        // if (head[0] === body[0] || head[1] === body[1] || head[0] === 1 || head[1] === 1) {
-        //     removePlayer(connection.playerID);
-        //     return;
-        // }
         const direction = player.direction;
         switch (direction) {
             case 'RIGHT':
-                const head = player.body[0];
-                if (head[0] === body[0] || head[1] === body[1]) {
+                const righthead = player.body[0];
+                if (righthead[0] === body[0] || righthead[1] === body[1]) {
                     removePlayer(connection.playerID);
                     return;
                 }
@@ -209,8 +204,8 @@ const moveSnake = () => {
                 }
                 break;
             case 'LEFT':
-                const head = player.body[player.body.length - 1];
-                if (head[0] === 1 || head[1] === 1) {
+                const lefthead = player.body[player.body.length - 1];
+                if (lefthead[0] === 1 || lefthead[1] === 1) {
                     removePlayer(connection.playerID);
                     return;
                 }
@@ -219,8 +214,8 @@ const moveSnake = () => {
                 }
                 break;
             case 'DOWN':
-                const head = player.body[0];
-                if (head[0] === body[0] || head[1] === body[1]) {
+                const downhead = player.body[0];
+                if (downhead[0] === body[0] || downhead[1] === body[1]) {
                     removePlayer(connection.playerID);
                     return;
                 }
@@ -229,8 +224,8 @@ const moveSnake = () => {
                 }
                 break;
             case 'UP':
-                const head = player.body[player.body.length - 1];
-                if (head[0] === 1 || head[1] === 1) {
+                const uphead = player.body[player.body.length - 1];
+                if (uphead[0] === 1 || uphead[1] === 1) {
                     removePlayer(connection.playerID);
                     return;
                 }
