@@ -191,29 +191,49 @@ const moveSnake = () => {
     const game = games[gameIDForSnakeMove];
 
     for (let [index, player] of game.players.entries()) {
-        let head = player.body[0];
-        if (head[0] === body[0] || head[1] === body[1] || head[0] === 1 || head[1] === 1) {
-            removePlayer(connection.playerID);
-            return;
-        }
+
+        // if (head[0] === body[0] || head[1] === body[1] || head[0] === 1 || head[1] === 1) {
+        //     removePlayer(connection.playerID);
+        //     return;
+        // }
         const direction = player.direction;
         switch (direction) {
             case 'RIGHT':
+                const head = player.body[0];
+                if (head[0] === body[0] || head[1] === body[1]) {
+                    removePlayer(connection.playerID);
+                    return;
+                }
                 for (let [id, _] of game.players[index].body.entries()) {
                     game.players[index].body[id][0]++;
                 }
                 break;
             case 'LEFT':
+                const head = player.body[player.body.length - 1];
+                if (head[0] === 1 || head[1] === 1) {
+                    removePlayer(connection.playerID);
+                    return;
+                }
                 for (let [id, _] of game.players[index].body.entries()) {
                     game.players[index].body[id][0]--;
                 }
                 break;
             case 'DOWN':
+                const head = player.body[0];
+                if (head[0] === body[0] || head[1] === body[1]) {
+                    removePlayer(connection.playerID);
+                    return;
+                }
                 for (let [id, _] of game.players[index].body.entries()) {
                     game.players[index].body[id][1]++;
                 }
                 break;
             case 'UP':
+                const head = player.body[player.body.length - 1];
+                if (head[0] === 1 || head[1] === 1) {
+                    removePlayer(connection.playerID);
+                    return;
+                }
                 for (let [id, _] of game.players[index].body.entries()) {
                     game.players[index].body[id][1]--;
                 }
