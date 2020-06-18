@@ -208,13 +208,27 @@ const moveSnake = () => {
     }
 }
 
+const removePlayer = (playerID) => {
+    for (let item of Object.keys(games)) {
+        const game = games[item];
+        const index = game.players.findIndex((item) => item.playerID === playerID);
+        if (index >= 0) {
+            games[item].players.splice(index, 1);
+            break;
+        }
+    }
+}
+
 ws.on('request', (req) => {
     connection = req.accept(null, req.origin);
     connection.on('open', () => {
         console.log('Connection opened!')
     })
-    connection.on('close', () => {
-        console.log('Connection closed!')
+    connection.on('close', (res) => {
+        console.log(connection, games);
+        console.log(res, 'Connection closed!');
+        const playerID = connection.closeDescription;
+        removePlayer(playerID);
     })
     connection.on("message", (message) => {
         const res = JSON.parse(message.utf8Data);
