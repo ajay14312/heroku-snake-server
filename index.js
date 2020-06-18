@@ -67,13 +67,13 @@ const joinGame = (res) => {
     const direction = directions[parseInt(Math.random() * 5)];
     let body = [];
     if (direction === 'RIGHT') {
-        body = [[maxX + 2, maxY + 2], [maxX + 3, maxY + 2], [maxX + 4, maxY + 2]];
+        body = [[maxX + 4, maxY + 2], [maxX + 3, maxY + 2], [maxX + 2, maxY + 2]];
     } else if (direction === 'LEFT') {
-        body = [[maxX + 2, maxY + 2], [maxX + 3, maxY + 2], [maxX + 4, maxY + 2]];
+        body = [[maxX + 4, maxY + 2], [maxX + 3, maxY + 2], [maxX + 2, maxY + 2]];
     } else if (direction === 'DOWN') {
-        body = [[maxX + 2, maxY + 2], [maxX + 2, maxY + 3], [maxX + 2, maxY + 4]];
+        body = [[maxX + 2, maxY + 4], [maxX + 2, maxY + 3], [maxX + 2, maxY + 2]];
     } else if (direction === 'UP') {
-        body = [[maxX + 2, maxY + 2], [maxX + 2, maxY + 3], [maxX + 2, maxY + 4]];
+        body = [[maxX + 2, maxY + 4], [maxX + 2, maxY + 3], [maxX + 2, maxY + 2]];
     }
     game.players.push({
         'playerID': playerID,
@@ -207,6 +207,7 @@ const moveSnake = () => {
                 for (let [id, _] of game.players[index].body.entries()) {
                     game.players[index].body[id][0]--;
                 }
+                game.players[index].body = game.players[index].body.reverse();
                 break;
             case 'DOWN':
                 for (let [id, _] of game.players[index].body.entries()) {
@@ -217,6 +218,7 @@ const moveSnake = () => {
                 for (let [id, _] of game.players[index].body.entries()) {
                     game.players[index].body[id][1]--;
                 }
+                game.players[index].body = game.players[index].body.reverse();
                 break;
         }
     }
