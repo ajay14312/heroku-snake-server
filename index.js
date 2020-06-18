@@ -207,7 +207,6 @@ const moveSnake = () => {
                 for (let [id, _] of game.players[index].body.entries()) {
                     game.players[index].body[id][0]--;
                 }
-                game.players[index].body = game.players[index].body.reverse();
                 break;
             case 'DOWN':
                 for (let [id, _] of game.players[index].body.entries()) {
@@ -218,7 +217,6 @@ const moveSnake = () => {
                 for (let [id, _] of game.players[index].body.entries()) {
                     game.players[index].body[id][1]--;
                 }
-                game.players[index].body = game.players[index].body.reverse();
                 break;
         }
     }
