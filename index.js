@@ -145,16 +145,28 @@ const directionChange = (res) => {
     let head = game.players[index].body[game.players[index].body.length - 1];
     switch (direction) {
         case 'RIGHT':
-            head = [head[0] + 2, head[1]];
+            for (let [id, _] of game.players[index].body.entries()) {
+                game.players[index].body[id][0]++;
+            }
+            //head = [head[0] + 1, head[1]];
             break;
         case 'LEFT':
-            head = [head[0] - 2, head[1]];
+            for (let [id, _] of game.players[index].body.entries()) {
+                game.players[index].body[id][0]--;
+            }
+            //head = [head[0] - 1, head[1]];
             break;
         case 'DOWN':
-            head = [head[0], head[1] + 2];
+            for (let [id, _] of game.players[index].body.entries()) {
+                game.players[index].body[id][1]++;
+            }
+            // head = [head[0], head[1] + 1];
             break;
         case 'UP':
-            head = [head[0], head[1] - 2];
+            for (let [id, _] of game.players[index].body.entries()) {
+                game.players[index].body[id][1]--;
+            }
+            //head = [head[0], head[1] - 1];
             break;
     }
 
