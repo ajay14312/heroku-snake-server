@@ -14,6 +14,7 @@ let timeOut = '';
 let gameIDForSnakeMove = '';
 const directions = ['RIGHT', 'LEFT', 'UP', 'DOWN'];
 const body = [50, 30];
+const isGameStarted = false;
 
 const httpServer = http.createServer(app);
 
@@ -190,7 +191,7 @@ const connect = () => {
 const moveSnake = () => {
     const game = games[gameIDForSnakeMove];
 
-    if (game.players.length > 1) {
+    if (isGameStarted) {
         for (let [index, player] of game.players.entries()) {
             const direction = player.direction;
             switch (direction) {
@@ -282,6 +283,8 @@ ws.on('request', (req) => {
             foodAte(res);
         } else if (res.method === METHODS.DIRECTIONCHANGE) {
             directionChange(res);
+        } else if (res.method === METHODS.STARTGAME) {
+            isGameStarted = true;
         }
     })
     connect();
