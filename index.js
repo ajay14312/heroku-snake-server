@@ -30,7 +30,8 @@ const createGame = (res) => {
     const gameID = `${gameDate.getTime()}-s${gameDate.getFullYear()}n${gameDate.getMonth()}-a${gameDate.getDate()}`;
     games[gameID] = {
         'id': gameID,
-        'players': []
+        'players': [],
+        'isGameStarted': false
     }
     food = [25, 15];
     players[playerID].playerName = res.playerName
@@ -191,7 +192,7 @@ const connect = () => {
 const moveSnake = () => {
     const game = games[gameIDForSnakeMove];
 
-    if (isGameStarted) {
+    if (game.isGameStarted) {
         for (let [index, player] of game.players.entries()) {
             const direction = player.direction;
             switch (direction) {
@@ -284,7 +285,7 @@ ws.on('request', (req) => {
         } else if (res.method === METHODS.DIRECTIONCHANGE) {
             directionChange(res);
         } else if (res.method === METHODS.STARTGAME) {
-            isGameStarted = true;
+            games[res.gameID].isGameStarted = true;
         }
     })
     connect();
