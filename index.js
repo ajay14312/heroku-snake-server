@@ -128,6 +128,7 @@ const foodAte = (player, index, xPositions, yPositions, game) => {
         game.players[index].body.push(head);
         xPositions.push(food[0]);
         yPositions.push(food[1]);
+        console.log(food[1], food[0], xPositions, yPositions);
         let maxX = Math.max(...xPositions);
         let maxY = Math.max(...yPositions);
         if (maxX >= 50) {
@@ -183,8 +184,10 @@ const moveSnake = () => {
         for (let [index, player] of game.players.entries()) {
             const direction = player.direction;
             let head = player.body[player.body.length - 1];
-            xPositions.push(player.body[player.body.length - 1] && player.body[player.body.length - 1][0]);
-            yPositions.push(player.body[player.body.length - 1] && player.body[player.body.length - 1][1]);
+            if (player.body.length > 0) {
+                xPositions.push(player.body[player.body.length - 1] && player.body[player.body.length - 1][0]);
+                yPositions.push(player.body[player.body.length - 1] && player.body[player.body.length - 1][1]);
+            }
             if (!checkFood) {
                 checkFood = foodAte(player, index, xPositions, yPositions, game);
                 game.isFoodEaten = checkFood;
