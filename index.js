@@ -99,48 +99,32 @@ const joinGame = (res) => {
     }, 500);
 }
 
-const foodAte = (res) => {
-    const playerID = res.playerID;
-    const gameID = res.gameID;
-    const game = games[gameID];
-
-    const xPositions = [];
-    const yPositions = []
-
-    for (let [index, item] of game.players.entries()) {
-        const body = item.body;
-        xPositions.push(body[body.length - 1][0]);
-        yPositions.push(body[body.length - 1][1]);
-        if (item.playerID === playerID) {
-            const body = game.players[index].body[0];
-            switch (direction) {
-                case 'RIGHT':
-                    head = [head[0] + 1, head[1]];
-                    break;
-                case 'LEFT':
-                    head = [head[0] - 1, head[1]];
-                    break;
-                case 'DOWN':
-                    head = [head[0], head[1] + 1];
-                    break;
-                case 'UP':
-                    head = [head[0], head[1] - 1];
-                    break;
-            }
-            game.players[index].body.push([30, 40]);
+const foodAte = (player, index) => {
+    const body = player.body;
+    const direction = player.direction;
+    let head = player.body[player.body.length - 1];
+    if (food[0] === body[0][0] && food[1] === body[0][1]) {
+        switch (direction) {
+            case 'RIGHT':
+                head = [head[0] + 1, head[1]];
+                break;
+            case 'LEFT':
+                head = [head[0] - 1, head[1]];
+                break;
+            case 'DOWN':
+                head = [head[0], head[1] + 1];
+                break;
+            case 'UP':
+                head = [head[0], head[1] - 1];
+                break;
         }
+        game.players[index].body.push(head);
+        xPositions.push(food[0]);
+        yPositions.push(food[1]);
+        const maxX = Math.max(...xPositions);
+        const maxY = Math.max(...yPositions);
+        food = [maxX + 5, maxY + 5];
     }
-
-    xPositions.push(food[0]);
-    yPositions.push(food[1]);
-    const maxX = Math.max(...xPositions);
-    const maxY = Math.max(...yPositions);
-
-    food = [maxX + 5, maxY + 5]
-
-    timeOut = setInterval(() => {
-        moveSnake();
-    }, 500);
 }
 
 const directionChange = (res) => {
@@ -172,11 +156,16 @@ const connect = () => {
 
 const moveSnake = () => {
     const game = games[gameIDForSnakeMove];
+    const xPositions = [];
+    const yPositions = [];
 
     if (game.isGameStarted) {
         for (let [index, player] of game.players.entries()) {
             const direction = player.direction;
             let head = player.body[player.body.length - 1];
+            xPositions.push(player.body[player.body.length - 1][0]);
+            yPositions.push(player.body[player.body.length - 1][1]);
+            foodAte(player, index, xPositions, yPositions);
             switch (direction) {
                 case 'RIGHT':
                     const righthead = player.body[0];
@@ -215,6 +204,13 @@ const moveSnake = () => {
             game.players[index].body.shift();
         }
     }
+
+    xPositions.push(food[0]);
+    yPositions.push(food[1]);
+    const maxX = Math.max(...xPositions);
+    const maxY = Math.max(...yPositions);
+
+    food = [maxX + 5, maxY + 5];
 
     const payLoad = {
         'method': METHODS.UPDATE,
