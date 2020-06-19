@@ -175,7 +175,7 @@ const moveSnake = () => {
     const game = games[gameIDForSnakeMove];
     const xPositions = [];
     const yPositions = [];
-    const checkFood = false;
+    let checkFood = false;
 
     game.isFoodEaten = false;
 
