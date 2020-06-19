@@ -198,9 +198,7 @@ const moveSnake = () => {
             switch (direction) {
                 case 'RIGHT':
                     const righthead = player.body[0];
-                    if (righthead[0] === body[0] || righthead[1] === body[1] || player.body.length === 0) {
-                        //removePlayer(connection.playerID);
-                        //return;
+                    if ((righthead && (righthead[0] === body[0] || righthead[1] === body[1])) || player.body.length === 0) {
                         game.players[index].body = [];
                     } else {
                         for (let [id, _] of game.players[index].body.entries()) {
@@ -210,9 +208,7 @@ const moveSnake = () => {
                     break;
                 case 'LEFT':
                     const lefthead = player.body[player.body.length - 1];
-                    if (lefthead[0] === 1 || lefthead[1] === 1 || player.body.length === 0) {
-                        //removePlayer(connection.playerID);
-                        //return;
+                    if ((lefthead && (lefthead[0] === 1 || lefthead[1] === 1)) || player.body.length === 0) {
                         game.players[index].body = [];
                     } else {
                         for (let [id, _] of game.players[index].body.entries()) {
@@ -222,9 +218,7 @@ const moveSnake = () => {
                     break;
                 case 'DOWN':
                     const downhead = player.body[0];
-                    if (downhead[0] === body[0] || downhead[1] === body[1] || player.body.length === 0) {
-                        //removePlayer(connection.playerID);
-                        //return;
+                    if ((downhead && (downhead[0] === body[0] || downhead[1] === body[1])) || player.body.length === 0) {
                         game.players[index].body = [];
                     } else {
                         for (let [id, _] of game.players[index].body.entries()) {
@@ -234,9 +228,7 @@ const moveSnake = () => {
                     break;
                 case 'UP':
                     const uphead = player.body[player.body.length - 1];
-                    if (uphead[0] === 1 || uphead[1] === 1 || player.body.length === 0) {
-                        //removePlayer(connection.playerID);
-                        //return;
+                    if ((uphead && (uphead[0] === 1 || uphead[1] === 1)) || player.body.length === 0) {
                         game.players[index].body = [];
                     } else {
                         for (let [id, _] of game.players[index].body.entries()) {
