@@ -137,7 +137,7 @@ const foodAte = (player, index, xPositions, yPositions, game) => {
         if (maxY >= 24) {
             maxY = 23;
         }
-        food = [maxX + 5, maxY + 5];
+        food = [maxX - 5, maxY - 5];
         console.log(food)
         return true;
     }
