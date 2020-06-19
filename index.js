@@ -198,42 +198,50 @@ const moveSnake = () => {
             switch (direction) {
                 case 'RIGHT':
                     const righthead = player.body[0];
-                    if (righthead[0] === body[0] || righthead[1] === body[1]) {
-                        removePlayer(connection.playerID);
-                        return;
-                    }
-                    for (let [id, _] of game.players[index].body.entries()) {
-                        game.players[index].body[id][0]++;
+                    if (righthead[0] === body[0] || righthead[1] === body[1] || player.body.length === 0) {
+                        //removePlayer(connection.playerID);
+                        //return;
+                        game.players[index].body = [];
+                    } else {
+                        for (let [id, _] of game.players[index].body.entries()) {
+                            game.players[index].body[id][0]++;
+                        }
                     }
                     break;
                 case 'LEFT':
                     const lefthead = player.body[player.body.length - 1];
-                    if (lefthead[0] === 1 || lefthead[1] === 1) {
-                        removePlayer(connection.playerID);
-                        return;
-                    }
-                    for (let [id, _] of game.players[index].body.entries()) {
-                        game.players[index].body[id][0]--;
+                    if (lefthead[0] === 1 || lefthead[1] === 1 || player.body.length === 0) {
+                        //removePlayer(connection.playerID);
+                        //return;
+                        game.players[index].body = [];
+                    } else {
+                        for (let [id, _] of game.players[index].body.entries()) {
+                            game.players[index].body[id][0]--;
+                        }
                     }
                     break;
                 case 'DOWN':
                     const downhead = player.body[0];
-                    if (downhead[0] === body[0] || downhead[1] === body[1]) {
-                        removePlayer(connection.playerID);
-                        return;
-                    }
-                    for (let [id, _] of game.players[index].body.entries()) {
-                        game.players[index].body[id][1]++;
+                    if (downhead[0] === body[0] || downhead[1] === body[1] || player.body.length === 0) {
+                        //removePlayer(connection.playerID);
+                        //return;
+                        game.players[index].body = [];
+                    } else {
+                        for (let [id, _] of game.players[index].body.entries()) {
+                            game.players[index].body[id][1]++;
+                        }
                     }
                     break;
                 case 'UP':
                     const uphead = player.body[player.body.length - 1];
-                    if (uphead[0] === 1 || uphead[1] === 1) {
-                        removePlayer(connection.playerID);
-                        return;
-                    }
-                    for (let [id, _] of game.players[index].body.entries()) {
-                        game.players[index].body[id][1]--;
+                    if (uphead[0] === 1 || uphead[1] === 1 || player.body.length === 0) {
+                        //removePlayer(connection.playerID);
+                        //return;
+                        game.players[index].body = [];
+                    } else {
+                        for (let [id, _] of game.players[index].body.entries()) {
+                            game.players[index].body[id][1]--;
+                        }
                     }
                     break;
             }
