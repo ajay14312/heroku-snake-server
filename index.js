@@ -65,7 +65,7 @@ const joinGame = (res) => {
     yPositions.push(food[1]);
     const maxX = Math.max(...xPositions);
     const maxY = Math.max(...yPositions);
-    const direction = directions[parseInt(Math.random() * 5)];
+    const direction = directions[parseInt(Math.random() * 4)];
     let body = [];
     if (direction === 'RIGHT') {
         body = [[maxX + 4, maxY + 2], [maxX + 3, maxY + 2], [maxX + 2, maxY + 2]];
