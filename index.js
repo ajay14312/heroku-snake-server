@@ -190,49 +190,51 @@ const connect = () => {
 const moveSnake = () => {
     const game = games[gameIDForSnakeMove];
 
-    for (let [index, player] of game.players.entries()) {
-        const direction = player.direction;
-        switch (direction) {
-            case 'RIGHT':
-                const righthead = player.body[0];
-                if (righthead[0] === body[0] || righthead[1] === body[1]) {
-                    removePlayer(connection.playerID);
-                    return;
-                }
-                for (let [id, _] of game.players[index].body.entries()) {
-                    game.players[index].body[id][0]++;
-                }
-                break;
-            case 'LEFT':
-                const lefthead = player.body[player.body.length - 1];
-                if (lefthead[0] === 1 || lefthead[1] === 1) {
-                    removePlayer(connection.playerID);
-                    return;
-                }
-                for (let [id, _] of game.players[index].body.entries()) {
-                    game.players[index].body[id][0]--;
-                }
-                break;
-            case 'DOWN':
-                const downhead = player.body[0];
-                if (downhead[0] === body[0] || downhead[1] === body[1]) {
-                    removePlayer(connection.playerID);
-                    return;
-                }
-                for (let [id, _] of game.players[index].body.entries()) {
-                    game.players[index].body[id][1]++;
-                }
-                break;
-            case 'UP':
-                const uphead = player.body[player.body.length - 1];
-                if (uphead[0] === 1 || uphead[1] === 1) {
-                    removePlayer(connection.playerID);
-                    return;
-                }
-                for (let [id, _] of game.players[index].body.entries()) {
-                    game.players[index].body[id][1]--;
-                }
-                break;
+    if (game.players.length > 1) {
+        for (let [index, player] of game.players.entries()) {
+            const direction = player.direction;
+            switch (direction) {
+                case 'RIGHT':
+                    const righthead = player.body[0];
+                    if (righthead[0] === body[0] || righthead[1] === body[1]) {
+                        removePlayer(connection.playerID);
+                        return;
+                    }
+                    for (let [id, _] of game.players[index].body.entries()) {
+                        game.players[index].body[id][0]++;
+                    }
+                    break;
+                case 'LEFT':
+                    const lefthead = player.body[player.body.length - 1];
+                    if (lefthead[0] === 1 || lefthead[1] === 1) {
+                        removePlayer(connection.playerID);
+                        return;
+                    }
+                    for (let [id, _] of game.players[index].body.entries()) {
+                        game.players[index].body[id][0]--;
+                    }
+                    break;
+                case 'DOWN':
+                    const downhead = player.body[0];
+                    if (downhead[0] === body[0] || downhead[1] === body[1]) {
+                        removePlayer(connection.playerID);
+                        return;
+                    }
+                    for (let [id, _] of game.players[index].body.entries()) {
+                        game.players[index].body[id][1]++;
+                    }
+                    break;
+                case 'UP':
+                    const uphead = player.body[player.body.length - 1];
+                    if (uphead[0] === 1 || uphead[1] === 1) {
+                        removePlayer(connection.playerID);
+                        return;
+                    }
+                    for (let [id, _] of game.players[index].body.entries()) {
+                        game.players[index].body[id][1]--;
+                    }
+                    break;
+            }
         }
     }
 
