@@ -30,7 +30,8 @@ const createGame = (res) => {
     games[gameID] = {
         'id': gameID,
         'players': [],
-        'isGameStarted': false
+        'isGameStarted': false,
+        'isFoodEaten': false
     }
     food = [25, 15];
     players[playerID].playerName = res.playerName
@@ -137,7 +138,10 @@ const foodAte = (player, index, xPositions, yPositions, game) => {
         }
         food = [maxX + 5, maxY + 5];
         console.log(food)
+        return true;
     }
+
+    return false;
 }
 
 const directionChange = (res) => {
@@ -171,6 +175,9 @@ const moveSnake = () => {
     const game = games[gameIDForSnakeMove];
     const xPositions = [];
     const yPositions = [];
+    const checkFood = false;
+
+    game.isFoodEaten = false;
 
     if (game.isGameStarted) {
         for (let [index, player] of game.players.entries()) {
@@ -178,7 +185,10 @@ const moveSnake = () => {
             let head = player.body[player.body.length - 1];
             xPositions.push(player.body[player.body.length - 1] && player.body[player.body.length - 1][0]);
             yPositions.push(player.body[player.body.length - 1] && player.body[player.body.length - 1][1]);
-            foodAte(player, index, xPositions, yPositions, game);
+            if (!checkFood) {
+                checkFood = foodAte(player, index, xPositions, yPositions, game);
+                game.isFoodEaten = checkFood;
+            }
             switch (direction) {
                 case 'RIGHT':
                     const righthead = player.body[0];
