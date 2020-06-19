@@ -63,10 +63,16 @@ const joinGame = (res) => {
     }
     xPositions.push(food[0]);
     yPositions.push(food[1]);
-    const maxX = Math.max(...xPositions);
-    const maxY = Math.max(...yPositions);
+    let maxX = Math.max(...xPositions);
+    let maxY = Math.max(...yPositions);
     const direction = directions[parseInt(Math.random() * 4)];
     let body = [];
+    if (maxX + 3 >= 50) {
+        maxX = 37
+    }
+    if (maxY + 3 >= 30) {
+        maxY = 25
+    }
     if (direction === 'RIGHT') {
         body = [[maxX + 4, maxY + 2], [maxX + 3, maxY + 2], [maxX + 2, maxY + 2]];
     } else if (direction === 'LEFT') {
@@ -99,11 +105,11 @@ const joinGame = (res) => {
     }, 500);
 }
 
-const foodAte = (player, index) => {
+const foodAte = (player, index, xPositions, yPositions, game) => {
     const body = player.body;
     const direction = player.direction;
     let head = player.body[player.body.length - 1];
-    if (food[0] === body[0][0] && food[1] === body[0][1]) {
+    if (body[0] && food[0] === body[0][0] && food[1] === body[0][1]) {
         switch (direction) {
             case 'RIGHT':
                 head = [head[0] + 1, head[1]];
@@ -121,9 +127,16 @@ const foodAte = (player, index) => {
         game.players[index].body.push(head);
         xPositions.push(food[0]);
         yPositions.push(food[1]);
-        const maxX = Math.max(...xPositions);
-        const maxY = Math.max(...yPositions);
+        let maxX = Math.max(...xPositions);
+        let maxY = Math.max(...yPositions);
+        if (maxX >= 50) {
+            maxX = 28;
+        }
+        if (maxY >= 30) {
+            maxY = 29;
+        }
         food = [maxX + 5, maxY + 5];
+        console.log(food)
     }
 }
 
@@ -163,9 +176,9 @@ const moveSnake = () => {
         for (let [index, player] of game.players.entries()) {
             const direction = player.direction;
             let head = player.body[player.body.length - 1];
-            xPositions.push(player.body[player.body.length - 1][0]);
-            yPositions.push(player.body[player.body.length - 1][1]);
-            foodAte(player, index, xPositions, yPositions);
+            xPositions.push(player.body[player.body.length - 1] && player.body[player.body.length - 1][0]);
+            yPositions.push(player.body[player.body.length - 1] && player.body[player.body.length - 1][1]);
+            foodAte(player, index, xPositions, yPositions, game);
             switch (direction) {
                 case 'RIGHT':
                     const righthead = player.body[0];
@@ -204,13 +217,6 @@ const moveSnake = () => {
             game.players[index].body.shift();
         }
     }
-
-    xPositions.push(food[0]);
-    yPositions.push(food[1]);
-    const maxX = Math.max(...xPositions);
-    const maxY = Math.max(...yPositions);
-
-    food = [maxX + 5, maxY + 5];
 
     const payLoad = {
         'method': METHODS.UPDATE,
@@ -252,9 +258,6 @@ ws.on('request', (req) => {
             createGame(res);
         } else if (res.method === METHODS.JOIN) {
             joinGame(res);
-        } else if (res.method === METHODS.FOODATE) {
-            clearInterval(timeOut);
-            foodAte(res);
         } else if (res.method === METHODS.DIRECTIONCHANGE) {
             clearInterval(timeOut);
             directionChange(res);
