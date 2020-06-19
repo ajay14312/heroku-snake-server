@@ -112,7 +112,21 @@ const foodAte = (res) => {
         xPositions.push(body[body.length - 1][0]);
         yPositions.push(body[body.length - 1][1]);
         if (item.playerID === playerID) {
-            const body = game.players[index].body;
+            const body = game.players[index].body[0];
+            switch (direction) {
+                case 'RIGHT':
+                    head = [head[0] + 1, head[1]];
+                    break;
+                case 'LEFT':
+                    head = [head[0] - 1, head[1]];
+                    break;
+                case 'DOWN':
+                    head = [head[0], head[1] + 1];
+                    break;
+                case 'UP':
+                    head = [head[0], head[1] - 1];
+                    break;
+            }
             game.players[index].body.push([30, 40]);
         }
     }
@@ -122,17 +136,11 @@ const foodAte = (res) => {
     const maxX = Math.max(...xPositions);
     const maxY = Math.max(...yPositions);
 
-    food = [maxX + 20, maxY + 20]
+    food = [maxX + 5, maxY + 5]
 
-    const payLoad = {
-        'method': METHODS.FOODCOLLISION,
-        'game': game,
-        'food': food
-    }
-
-    for (let item of game.players) {
-        players[item.playerID].connection.send(JSON.stringify(payLoad));
-    }
+    timeOut = setInterval(() => {
+        moveSnake();
+    }, 500);
 }
 
 const directionChange = (res) => {
@@ -249,6 +257,7 @@ ws.on('request', (req) => {
         } else if (res.method === METHODS.JOIN) {
             joinGame(res);
         } else if (res.method === METHODS.FOODATE) {
+            clearInterval(timeOut);
             foodAte(res);
         } else if (res.method === METHODS.DIRECTIONCHANGE) {
             clearInterval(timeOut);
