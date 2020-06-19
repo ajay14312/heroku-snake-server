@@ -14,7 +14,6 @@ let timeOut = '';
 let gameIDForSnakeMove = '';
 const directions = ['RIGHT', 'LEFT', 'UP', 'DOWN'];
 const body = [50, 30];
-const isGameStarted = false;
 
 const httpServer = http.createServer(app);
 
@@ -140,49 +139,11 @@ const directionChange = (res) => {
     const playerID = res.playerID;
     const gameID = res.gameID;
     const game = games[gameID];
-    const direction = res.direction;
     const index = game.players.findIndex((item) => item.playerID === playerID);
-    let head = game.players[index].body[game.players[index].body.length - 1];
-    switch (direction) {
-        case 'RIGHT':
-            for (let [id, _] of game.players[index].body.entries()) {
-                game.players[index].body[id][0]++;
-            }
-            //head = [head[0] + 1, head[1]];
-            break;
-        case 'LEFT':
-            for (let [id, _] of game.players[index].body.entries()) {
-                game.players[index].body[id][0]--;
-            }
-            //head = [head[0] - 1, head[1]];
-            break;
-        case 'DOWN':
-            for (let [id, _] of game.players[index].body.entries()) {
-                game.players[index].body[id][1]++;
-            }
-            // head = [head[0], head[1] + 1];
-            break;
-        case 'UP':
-            for (let [id, _] of game.players[index].body.entries()) {
-                game.players[index].body[id][1]--;
-            }
-            //head = [head[0], head[1] - 1];
-            break;
-    }
-
-    game.players[index].body.push(head);
-    game.players[index].body.shift();
     game.players[index].direction = res.direction;
-
-    const payLoad = {
-        'method': METHODS.DIRECTIONCHANGED,
-        'game': game
-    }
-
-    for (let item of game.players) {
-        players[item.playerID].connection.send(JSON.stringify(payLoad));
-    }
-
+    timeOut = setInterval(() => {
+        moveSnake();
+    }, 500);
 }
 
 const connect = () => {
@@ -207,15 +168,14 @@ const moveSnake = () => {
     if (game.isGameStarted) {
         for (let [index, player] of game.players.entries()) {
             const direction = player.direction;
+            let head = player.body[player.body.length - 1];
             switch (direction) {
                 case 'RIGHT':
                     const righthead = player.body[0];
                     if ((righthead && (righthead[0] === body[0] || righthead[1] === body[1])) || player.body.length === 0) {
                         game.players[index].body = [];
                     } else {
-                        for (let [id, _] of game.players[index].body.entries()) {
-                            game.players[index].body[id][0]++;
-                        }
+                        head = [head[0] + 1, head[1]];
                     }
                     break;
                 case 'LEFT':
@@ -223,9 +183,7 @@ const moveSnake = () => {
                     if ((lefthead && (lefthead[0] === 1 || lefthead[1] === 1)) || player.body.length === 0) {
                         game.players[index].body = [];
                     } else {
-                        for (let [id, _] of game.players[index].body.entries()) {
-                            game.players[index].body[id][0]--;
-                        }
+                        head = [head[0] - 1, head[1]];
                     }
                     break;
                 case 'DOWN':
@@ -233,9 +191,7 @@ const moveSnake = () => {
                     if ((downhead && (downhead[0] === body[0] || downhead[1] === body[1])) || player.body.length === 0) {
                         game.players[index].body = [];
                     } else {
-                        for (let [id, _] of game.players[index].body.entries()) {
-                            game.players[index].body[id][1]++;
-                        }
+                        head = [head[0], head[1] + 1];
                     }
                     break;
                 case 'UP':
@@ -243,12 +199,12 @@ const moveSnake = () => {
                     if ((uphead && (uphead[0] === 1 || uphead[1] === 1)) || player.body.length === 0) {
                         game.players[index].body = [];
                     } else {
-                        for (let [id, _] of game.players[index].body.entries()) {
-                            game.players[index].body[id][1]--;
-                        }
+                        head = [head[0], head[1] - 1];
                     }
                     break;
             }
+            game.players[index].body.push(head);
+            game.players[index].body.shift();
         }
     }
 
@@ -295,6 +251,7 @@ ws.on('request', (req) => {
         } else if (res.method === METHODS.FOODATE) {
             foodAte(res);
         } else if (res.method === METHODS.DIRECTIONCHANGE) {
+            clearInterval(timeOut);
             directionChange(res);
         } else if (res.method === METHODS.STARTGAME) {
             games[res.gameID].isGameStarted = true;
